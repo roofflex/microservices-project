@@ -21,6 +21,6 @@ public class CurrencyConversion {
     private String to;
     private BigDecimal quantity;
     private BigDecimal exchangeRate;
-    private BigDecimal totalAmount;
+    private BigDecimal totalCalculatedAmount;
     private String environment;
 }
