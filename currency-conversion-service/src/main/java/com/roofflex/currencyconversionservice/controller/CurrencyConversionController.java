@@ -2,7 +2,7 @@ package com.roofflex.currencyconversionservice.controller;
 
 import com.roofflex.currencyconversionservice.model.CurrencyConversion;
 import com.roofflex.currencyconversionservice.model.ExchangeRateDto;
-import com.roofflex.currencyconversionservice.restclient.CurrencyExchangeProxy;
+import com.roofflex.currencyconversionservice.restclient.CurrencyExchangeServiceProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,13 +17,13 @@ import static java.util.Objects.requireNonNull;
 public class CurrencyConversionController {
 
     @Autowired
-    private CurrencyExchangeProxy currencyExchangeProxy;
+    private CurrencyExchangeServiceProxy currencyExchangeServiceProxy;
 
     @GetMapping("/currency-conversion")
     public CurrencyConversion calculateCurrencyConversion(@RequestParam String from,
                                                           @RequestParam String to,
                                                           @RequestParam BigDecimal quantity) {
-        ResponseEntity<ExchangeRateDto> responseEntity = currencyExchangeProxy.getExchangeRate(from, to);
+        ResponseEntity<ExchangeRateDto> responseEntity = currencyExchangeServiceProxy.getExchangeRate(from, to);
 
         ExchangeRateDto exchangeRateDto = requireNonNull(responseEntity.getBody(), "expected non-null exchange rate");
 
