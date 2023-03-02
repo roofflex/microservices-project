@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Proxy to currency-exchange-rates-service to ease requests to that service
  */
-@FeignClient(name = "currency-exchange-rates-service", url = "localhost:8000/api/v1")
+@FeignClient(name = "currency-exchange-rates-service")
 public interface CurrencyExchangeServiceProxy {
 
     @GetMapping("/currency-exchange-rate")

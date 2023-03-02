@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.MessageFormat;
+
 @RestController
 public class CurrencyExchangeRatesController {
 
@@ -20,7 +22,17 @@ public class CurrencyExchangeRatesController {
 
     @GetMapping("/currency-exchange-rate")
     public ResponseEntity<ExchangeRate> getExchangeRate(@RequestParam String from, @RequestParam String to) {
-        ExchangeRate exchangeRate = exchangeRateService.findByFromAndTo(from, to);
+        ExchangeRate fetched = exchangeRateService.findByFromAndTo(from, to);
+
+        String port = environment.getProperty("local.server.port");
+
+        ExchangeRate exchangeRate = ExchangeRate.builder()
+                .id(fetched.getId())
+                .from(fetched.getFrom())
+                .to(fetched.getTo())
+                .exchangeRate(fetched.getExchangeRate())
+                .environment(MessageFormat.format("port {}", port))
+                .build();
 
         return ResponseEntity.ok()
                 .body(exchangeRate);
