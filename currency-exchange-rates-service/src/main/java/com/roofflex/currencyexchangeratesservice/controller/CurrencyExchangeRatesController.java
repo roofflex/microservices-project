@@ -31,7 +31,7 @@ public class CurrencyExchangeRatesController {
                 .from(fetched.getFrom())
                 .to(fetched.getTo())
                 .exchangeRate(fetched.getExchangeRate())
-                .environment(MessageFormat.format("port {}", port))
+                .environment(MessageFormat.format("port {0}", port))
                 .build();
 
         return ResponseEntity.ok()
