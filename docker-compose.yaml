@@ -1,0 +1,99 @@
+version: '3.7'
+
+services:
+  cloud-config-server:
+    image: roofflex/microservicescourse-spring-cloud-config-server:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8888:8888"
+    # Creating a volume will provide a bridge between
+    # local config directory and the one container uses.  
+    # 
+    # This way, services may be configured via Cloud Config Server
+    # while containers are running
+    volumes:
+      - ./git-localconfig-repository:/home/git-localconfig-repository
+    networks:
+      - currency-network 
+
+  naming-server:
+    image: roofflex/microservicescourse-naming-server:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8761:8761"
+    networks:
+      - currency-network 
+
+  currency-exchange-rates:
+    image: roofflex/microservicescourse-currency-exchange-rates-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    networks:
+      - currency-network 
+    depends_on:
+      - cloud-config-server
+      - naming-server
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://naming-server:8761/eureka
+      - management.zipkin.tracing.endpoint=http://zipkin-server:9411/api/v2/spans
+
+  currency-conversion:
+    image: roofflex/microservicescourse-currency-conversion-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8100:8100"
+    networks:
+      - currency-network 
+    depends_on:
+      - cloud-config-server
+      - naming-server
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://naming-server:8761/eureka
+      - management.zipkin.tracing.endpoint=http://zipkin-server:9411/api/v2/spans
+
+  limits:
+    image: roofflex/microservicescourse-limits-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    networks:
+      - currency-network 
+    depends_on:
+      - cloud-config-server
+      - naming-server
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://naming-server:8761/eureka
+      - management.zipkin.tracing.endpoint=http://zipkin-server:9411/api/v2/spans
+
+  api-gateway:
+    image: roofflex/microservicescourse-api-gateway:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    restart: on-failure
+    ports:
+      - "8765:8765"
+    networks:
+      - currency-network 
+    depends_on:
+      - cloud-config-server
+      - naming-server
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://naming-server:8761/eureka
+      - management.zipkin.tracing.endpoint=http://zipkin-server:9411/api/v2/spans
+
+  zipkin-server:
+    image: openzipkin/zipkin:2.23
+    mem_limit: 300m
+    restart: on-failure
+    ports:
+      - "9411:9411"
+    networks:
+      - currency-network
+
+networks:
+  currency-network:

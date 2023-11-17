@@ -1,3 +1,6 @@
+import org.springframework.boot.buildpack.platform.build.PullPolicy
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.0.3"
@@ -28,4 +31,9 @@ dependencyManagement {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.named<BootBuildImage>("bootBuildImage") {
+	imageName.set("roofflex/microservicescourse-${project.name}:${project.version}")
+	pullPolicy.set(PullPolicy.IF_NOT_PRESENT)
 }

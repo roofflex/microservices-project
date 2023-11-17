@@ -2,6 +2,7 @@ package com.roofflex.currencyexchangeratesservice.controller;
 
 import com.roofflex.currencyexchangeratesservice.model.ExchangeRate;
 import com.roofflex.currencyexchangeratesservice.service.ExchangeRateService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.MessageFormat;
 
+@Slf4j
 @RestController
 public class CurrencyExchangeRatesController {
 
@@ -23,6 +25,8 @@ public class CurrencyExchangeRatesController {
     @GetMapping("/currency-exchange-rate")
     public ResponseEntity<ExchangeRate> getExchangeRate(@RequestParam String from, @RequestParam String to) {
         ExchangeRate fetched = exchangeRateService.findByFromAndTo(from, to);
+
+        log.info("getExchangeRate called with params: from={}, to={}", from, to);
 
         String port = environment.getProperty("local.server.port");
 
