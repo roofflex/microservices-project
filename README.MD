@@ -1,4 +1,4 @@
-This project consists of 4 microservices:
+This project consists of 6 microservices:
 - Spring Cloud config server
 - Eureka naming server
 - limits service
