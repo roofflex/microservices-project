@@ -12,6 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "currency-exchange-rates-service")
 public interface CurrencyExchangeServiceProxy {
 
-    @GetMapping("/currency-exchange-rate")
+    @GetMapping("/api/v1/currency-exchange-rate")
     ResponseEntity<ExchangeRateDto> getExchangeRate(@RequestParam String from, @RequestParam String to);
 }
